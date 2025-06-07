@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTMLBlocks Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <style>
+    body {
+      background: #181a1b;
+      color: #f6f6f6;
+      font-family: system-ui, sans-serif;
+      margin: 0; padding: 0;
+      min-height: 100vh;
+    }
+    #home-container {
+      max-width: 600px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      color: #ffd662;
+      font-size: 2.4em;
+      margin-bottom: 0.1em;
+    }
+    #desc {
+      color: #51c4ff;
+      font-size: 1.14em;
+      margin-bottom: 2.5em;
+      text-align: center;
+      line-height: 1.4em;
+    }
+    #create-btn {
+      background: #51c4ff;
+      color: #191a1d;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.23em;
+      padding: 13px 42px;
+      cursor: pointer;
+      transition: background 0.13s;
+      box-shadow: 0 3px 22px #0004;
+      margin-bottom: 1.1em;
+    }
+    #create-btn:active { background: #1b8fa8;}
+    #search-bar-home {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2.2em;
+    }
+    #search-home {
+      font-size: 1.09em;
+      border-radius: 7px;
+      border: none;
+      padding: 9px 15px;
+      background: #23282c;
+      color: #f7f7f7;
+      width: 75%;
+      max-width: 350px;
+      box-sizing: border-box;
+      margin-top: 0.2em;
+    }
+    #footer {
+      color: #aaa;
+      font-size: 0.93em;
+      margin-top: 4em;
+      text-align: center;
+    }
+    @media (max-width: 700px) {
+      h1 { font-size: 2em;}
+      #create-btn { font-size: 1.1em; padding: 13px 20vw; }
+      #desc { font-size: 1em; }
+    }
+    /* Editor styles */
+    #editor-container { display: none; flex-direction: row; min-height: 100vh; background: #181a1b;}
+    #sidebar {
+      background: #222326;
+      width: 220px;
+      min-width: 140px;
+      border-right: 2px solid #232428;
+      padding: 0 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #sidebar h2 {
+      text-align: center;
+      margin: 0;
+      padding: 18px 0 8px 0;
+      font-size: 1.2em;
+      color: #ffd662;
+      border-bottom: 1px solid #292c33;
+      letter-spacing: 0.04em;
+    }
+    .category {
+      padding: 10px 14px 0 14px;
+    }
+    .category-title {
+      font-weight: bold;
+      font-size: 1.05em;
+      margin-bottom: 8px;
+      margin-top: 12px;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+    .block-btn {
+      display: block;
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      font-weight: bold;
+      text-align: left;
+      cursor: grab;
+      transition: background 0.13s, color 0.13s;
+      user-select: none;
+      box-shadow: 0 2px 8px #0001;
+    }
+    .block-btn:active { opacity: 0.7; }
+    .structure-block { background: #ffd662; color: #232428; }
+    .text-block { background: #6cf2b7; color: #19362d; }
+    .media-block { background: #51c4ff; color: #181a1b; }
+    .form-block { background: #f39bff; color: #3c193e; }
+    .style-block { background: #ffc9a6; color: #54371d;}
+    #editor-main { flex: 1; display: flex; flex-direction: column; }
+    #editor-header {
+      background: #232428;
+      padding: 18px 18px 13px 18px;
+      display: flex; gap: 1.1em; align-items: center;
+      border-bottom: 2px solid #292c33;
+    }
+    #editor-title { color: #ffd662; font-size: 1.18em; font-weight: bold; flex: 1; }
+    #project-name {
+      font-size: 1.08em;
+      color: #51c4ff;
+      background: #232428;
+      border: 1.5px solid #51c4ff;
+      border-radius: 6px;
+      padding: 2px 9px;
+      margin-left: 7px;
+      margin-right: 8px;
+      outline: none;
+      width: 140px;
+      transition: border 0.14s;
+    }
+    #project-name:focus { border-color: #ffd662; color: #ffd662;}
+    #back-btn {
+      background: #ffd662;
+      color: #232428;
+      border: none;
+      border-radius: 7px;
+      font-weight: bold;
+      padding: 7px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-left: 6px;
+      transition: background 0.13s;
+    }
+    #back-btn:active { background: #e7c34b; }
+    #editor-controls {
+      display: flex;
+      gap: 1.2em;
+      padding: 12px 18px 12px 18px;
+      background: #191a1d;
+      align-items: center;
+      border-bottom: 2px solid #232428;
+    }
+    #editor-controls button {
+      background: #ffd662;
+      color: #232428;
+      border: none;
+      border-radius: 7px;
+      font-weight: bold;
+      padding: 8px 22px;
+      font-size: 1.04em;
+      cursor: pointer;
+      transition: background 0.13s;
+    }
+    #editor-controls button:active { background: #e7c34b; }
+    #canvas { min-height: 400px; background: #232428; border-radius: 0 0 0 0; margin: 0; padding: 0; flex: 1; border-bottom: 2px solid #292c33; overflow-y: auto; position: relative; display: flex; flex-direction: column; gap: 14px;}
+    .block { margin: 0 12px; padding: 10px 14px; border-radius: 15px; font-size: 1.1em; position: relative; box-shadow: 0 2px 8px #0003; transition: background 0.11s; width: auto; min-width: 120px; display: flex; gap: 0.7em; align-items: center; flex-wrap: wrap; border: 2px solid transparent; background: #31343b; color: #ffd662; }
+    .block-top { border-radius: 18px 18px 6px 6px !important; background: #15191e !important; color: #ffd662 !important; font-weight: bold; font-size: 1.12em; margin-top: 14px; margin-bottom: 0; border: 2px solid #ffd662; box-shadow: 0 4px 24px #0007; cursor: default; display: flex; flex-direction: row; align-items: center; gap: 0.7em; user-select: none; outline: none !important; z-index: 1;}
+    .block input, .block select {
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+      padding: 2px 6px;
+      margin-left: 2px;
+      margin-right: 2px;
+      background: #232428;
+      color: inherit;
+      min-width: 36px;
+    }
+    .block .delete-block {
+      background: #e44;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      margin-left: 8px;
+      padding: 2px 8px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.12s;
+    }
+    .block .delete-block:hover { background: #c11; }
+    .block-placeholder { height: 28px; margin: 0 12px; border-radius: 12px; background: #4448; border: 2px dashed #51c4ff; margin-bottom: 0;}
+    #output-preview, #output-html {
+      background: #181a1b;
+      color: #fff;
+      margin: 0;
+      min-height: 180px;
+      border-top: 2px solid #232428;
+      box-sizing: border-box;
+      width: 100%;
+      height: 280px;
+      resize: vertical;
+      padding: 13px 1vw 0 1vw;
+      font-size: 1.03em;
+      border-radius: 0 0 18px 18px;
+      margin-bottom: 0;
+    }
+    #output-html {
+      background: #111;
+      color: #ffd662;
+      border-top: 2px solid #232428;
+      font-family: "Fira Mono", "Consolas", monospace;
+    }
+    @media (max-width: 900px) {
+      #editor-container { flex-direction: column;}
+      #sidebar { width: 100vw; min-width:0; border-right:none; border-bottom:2px solid #292c33;}
+      #editor-header { padding: 13px 3vw 10px 3vw; }
+      #editor-controls { padding: 10px 3vw 10px 3vw;}
+      #canvas { min-height: 200px;}
+    }
+    /* Hide the background audio element */
+    #background-audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Home Page -->
+  <div id="home-container">
+    <h1>HTMLBlocks</h1>
+    <div id="desc">
+      <b>HTMLBlocks</b> is a simple online editor for building HTML with visual blocks.<br>
+      <br>
+      <span style="color:#ffd662;">No sign up required.</span> Click below to start a new project and instantly build and preview your HTML page!
+    </div>
+    <button id="create-btn">Create New Project</button>
+    <div id="search-bar-home">
+      <input id="search-home" type="text" placeholder="Search...">
+    </div>
+    <div id="footer">
+      <span id="copyright"></span>
+      HTMLBlocks &mdash; A simple HTML visual editor.<br>
+      Powered by your browser.
+    </div>
+  </div>
+
+  <!-- HTMLBlocks Editor -->
+  <div id="editor-container">
+    <div id="sidebar">
+      <h2>Blocks</h2>
+      <div class="category">
+        <div class="category-title" style="color:#ffd662;">Structure</div>
+        <button class="block-btn structure-block" draggable="true" data-block="heading">Heading</button>
+        <button class="block-btn structure-block" draggable="true" data-block="paragraph">Paragraph</button>
+        <button class="block-btn structure-block" draggable="true" data-block="div">Section/Div</button>
+        <button class="block-btn structure-block" draggable="true" data-block="list">List</button>
+        <button class="block-btn structure-block" draggable="true" data-block="link">Link</button>
+      </div>
+      <div class="category">
+        <div class="category-title" style="color:#6cf2b7;">Text</div>
+        <button class="block-btn text-block" draggable="true" data-block="span">Inline Text (span)</button>
+        <button class="block-btn text-block" draggable="true" data-block="pre">Preformatted Text</button>
+      </div>
+      <div class="category">
+        <div class="category-title" style="color:#51c4ff;">Media</div>
+        <button class="block-btn media-block" draggable="true" data-block="image">Image</button>
+        <button class="block-btn media-block" draggable="true" data-block="audio">Audio</button>
+        <button class="block-btn media-block" draggable="true" data-block="video">Video</button>
+      </div>
+      <div class="category">
+        <div class="category-title" style="color:#f39bff;">Form</div>
+        <button class="block-btn form-block" draggable="true" data-block="input">Input Field</button>
+        <button class="block-btn form-block" draggable="true" data-block="button">Button</button>
+      </div>
+      <div class="category">
+        <div class="category-title" style="color:#ffc9a6;">Style</div>
+        <button class="block-btn style-block" draggable="true" data-block="color">Background Color</button>
+      </div>
+    </div>
+    <div id="editor-main">
+      <div id="editor-header">
+        <span id="editor-title">HTMLBlocks Editor</span>
+        <span>
+          <input id="project-name" value="My HTMLBlocks Project" title="Project name">
+        </span>
+        <button id="back-btn">Home</button>
+      </div>
+      <div id="editor-controls">
+        <button id="to-html">View HTML</button>
+        <button id="to-preview">Preview</button>
+      </div>
+      <div id="canvas"></div>
+      <iframe id="output-preview"></iframe>
+      <textarea id="output-html" readonly></textarea>
+    </div>
+  </div>
+
+  <!-- Hidden background audio -->
+  <audio id="background-audio" loop src="data:audio/wav;base64,UklGRqQ4AQBXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YYA4AQCAgIGBgoKDg4SEhYWGhoeHiIiJiYqKi4uMjI2Njo6Pj5CQkZGSkpOTlJSVlZaWl5eYmJmZmpqbm5ycnZ2enp+foKChoaKio6OjpKSlpaamp6eoqKipqaqqq6usrKytra6ur6+vsLCxsbKysrOztLS0tbW2tra3t7i4uLm5urq6u7u7vLy8vb2+vr6/v7/AwMDBwcHCwsLDw8PExMTExcXFxsbGx8fHx8jIyMnJycnKysrKy8vLy8zMzMzNzc3Nzc7Ozs7Pz8/Pz9DQ0NDQ0NHR0dHR0tLS0tLS0tPT09PT09PU1NTU1NTU1NXV1dXV1dXV1dXW1tbW1tbW1tbW1tbW1tbW1tfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX1tbW1tbW1tbW1tbW1tbW1tXV1dXV1dXV1dXV1NTU"></audio>
+
+  <script>
+    // Set copyright year dynamically
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("copyright").innerHTML =
+        "&copy; " + new Date().getFullYear() + " ";
+    });
+
+    // ---- Home/Editor Navigation ----
+    const homeC = document.getElementById("home-container");
+    const editorC = document.getElementById("editor-container");
+    let unsaved = false;
+    let audioStarted = false;
+    const backgroundAudio = document.getElementById('background-audio');
+
+    document.getElementById("create-btn").onclick = () => {
+      homeC.style.display = "none";
+      editorC.style.display = "flex";
+      startEditor();
+      playBackgroundAudio();
+    };
+    document.getElementById("back-btn").onclick = () => {
+      if (unsaved) {
+        if (!confirm("Are you sure? you have unsaved changes.")) return;
+      }
+      editorC.style.display = "none";
+      homeC.style.display = "flex";
+      stopBackgroundAudio();
+    };
+
+    // Play and stop functions for background audio
+    function playBackgroundAudio() {
+      // Most browsers require a user gesture to start audio,
+      // so we try to play and handle the promise.
+      if (backgroundAudio) {
+        backgroundAudio.currentTime = 0;
+        backgroundAudio.loop = true;
+        backgroundAudio.volume = 1;
+        backgroundAudio.muted = false;
+        backgroundAudio.play().then(() => {
+          audioStarted = true;
+        }).catch(() => {
+          // If autoplay fails, try again on a user gesture
+          document.body.addEventListener('click', tryPlayAudioOnce, { once: true });
+        });
+      }
+    }
+    function tryPlayAudioOnce() {
+      backgroundAudio.play().catch(()=>{}); // Try to play again on click
+    }
+    function stopBackgroundAudio() {
+      if (backgroundAudio) {
+        backgroundAudio.pause();
+        backgroundAudio.currentTime = 0;
+        audioStarted = false;
+      }
+    }
+
+    // ---- Minimal HTMLBlocks Editor (blocks, not textarea) ----
+    let projectName = "My HTMLBlocks Project";
+    function createTopBlock() {
+      const top = document.createElement("div");
+      top.className = "block block-top";
+      top.setAttribute("data-type", "top");
+      top.innerHTML = `
+        <span style="color:#ffd662;">
+        &lt;!DOCTYPE html&gt;<br>
+        &lt;html lang="en"&gt;<br>
+        &lt;head&gt;<br>
+        &nbsp;&nbsp;&lt;meta charset="UTF-8"&gt;<br>
+        &nbsp;&nbsp;&lt;title&gt;</span>
+        <input id="project-name" value="${projectName.replace(/"/g,'&quot;')}" title="Project name">
+        <span style="color:#ffd662;">
+        &lt;/title&gt;<br>
+        &nbsp;&nbsp;&lt;meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no"&gt;<br>
+        &lt;/head&gt;<br>
+        &lt;body&gt;
+        </span>
+      `;
+      const pn = top.querySelector("#project-name");
+      pn.oninput = function() {
+        projectName = pn.value;
+        unsaved = true;
+        updatePreview();
+      };
+      pn.value = projectName;
+      return top;
+    }
+
+    function createBlock(type, data = {}) {
+      let el = document.createElement("div");
+      el.className = "block " + blockCategoryClass(type);
+      el.setAttribute("draggable", "true");
+      switch (type) {
+        case "heading":
+          el.innerHTML = `
+            <span>&lt;h</span>
+            <select class="hsize">${[1,2,3,4,5,6].map(i=>`<option value="${i}"${data.size==i?" selected":""}>${i}</option>`).join("")}</select>
+            <span>&gt;</span>
+            <input type="text" class="htext" value="${data.text||"Heading"}" placeholder="Heading text">
+            <span>&lt;/h<span class="hsz">${data.size||1}</span>&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "paragraph":
+          el.innerHTML = `
+            <span>&lt;p&gt;</span>
+            <input type="text" class="ptext" value="${data.text||"Paragraph"}" placeholder="Paragraph">
+            <span>&lt;/p&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "span":
+          el.innerHTML = `
+            <span>&lt;span&gt;</span>
+            <input type="text" class="spantext" value="${data.text||"Inline text"}" placeholder="Inline text">
+            <span>&lt;/span&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "pre":
+          el.innerHTML = `
+            <span>&lt;pre&gt;</span>
+            <input type="text" class="pretext" value="${data.text||"Preformatted text"}" placeholder="Preformatted text">
+            <span>&lt;/pre&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "image":
+          el.innerHTML = `
+            <span>&lt;img src="</span>
+            <input type="text" class="imgsrc" value="${data.src||""}" placeholder="Image URL">
+            <span>" alt="</span>
+            <input type="text" class="imgalt" value="${data.alt||""}" placeholder="Alt text">
+            <span>"&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "audio":
+          el.innerHTML = `
+            <span>&lt;audio src="</span>
+            <input type="text" class="audiosrc" value="${data.src||""}" placeholder="Audio URL">
+            <span>" controls&gt;&lt;/audio&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "video":
+          el.innerHTML = `
+            <span>&lt;video src="</span>
+            <input type="text" class="videosrc" value="${data.src||""}" placeholder="Video URL">
+            <span>" controls&gt;&lt;/video&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "link":
+          el.innerHTML = `
+            <span>&lt;a href="</span>
+            <input type="text" class="alink" value="${data.href||""}" placeholder="URL">
+            <span>"&gt;</span>
+            <input type="text" class="atext" value="${data.text||"Link"}" placeholder="Link text">
+            <span>&lt;/a&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "list":
+          el.innerHTML = `
+            <span>
+              <select class="listtype">
+                <option value="ul"${data.type=="ul"?" selected":""}>Bulleted</option>
+                <option value="ol"${data.type=="ol"?" selected":""}>Numbered</option>
+              </select>
+            </span>
+            <span>&lt;li&gt;</span>
+            <input type="text" class="litem" value="${(data.items && data.items[0]) || "Item 1"}">
+            <span>&lt;/li&gt;</span>
+            <button class="add-li" title="Add List Item">+</button>
+            <button class="delete-block" title="Remove">×</button>
+            <div class="other-li">
+              ${(data.items ? data.items.slice(1) : []).map(item => `
+                <span>&lt;li&gt;</span>
+                <input type="text" class="litem" value="${item}">
+                <span>&lt;/li&gt;</span>
+                <button class="del-li" title="Remove">–</button>
+              `).join("")}
+            </div>
+          `;
+          break;
+        case "input":
+          el.innerHTML = `
+            <span>&lt;input type="</span>
+            <select class="itype">
+              <option value="text"${data.type=="text"?" selected":""}>Text</option>
+              <option value="number"${data.type=="number"?" selected":""}>Number</option>
+              <option value="email"${data.type=="email"?" selected":""}>Email</option>
+              <option value="checkbox"${data.type=="checkbox"?" selected":""}>Checkbox</option>
+              <option value="password"${data.type=="password"?" selected":""}>Password</option>
+            </select>
+            <span>" placeholder="</span>
+            <input type="text" class="iplace" value="${data.placeholder||""}" placeholder="Placeholder">
+            <span>"&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "button":
+          el.innerHTML = `
+            <span>&lt;button&gt;</span>
+            <input type="text" class="btext" value="${data.text||"Click Me"}" placeholder="Button text">
+            <span>&lt;/button&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "div":
+          el.innerHTML = `
+            <span>&lt;div&gt;</span>
+            <input type="text" class="divtext" value="${data.text||"Section"}" placeholder="Section content">
+            <span>&lt;/div&gt;</span>
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+        case "color":
+          el.innerHTML = `
+            <span>Body background: </span>
+            <input type="color" class="colorpick" value="${data.color||"#232428"}">
+            <button class="delete-block" title="Remove">×</button>
+          `;
+          break;
+      }
+      el.setAttribute("data-type", type);
+      addBlockEvents(el);
+      return el;
+    }
+
+    function blockCategoryClass(type) {
+      if(["heading","paragraph","div","list","link"].includes(type)) return "structure-block";
+      if(["span","pre"].includes(type)) return "text-block";
+      if(["image","audio","video"].includes(type)) return "media-block";
+      if(["input","button"].includes(type)) return "form-block";
+      if(["color"].includes(type)) return "style-block";
+      return "";
+    }
+
+    // ----- Drag and connect logic -----
+    let dragBlock = null;
+    let dragPlaceholder = null;
+    const canvas = document.getElementById("canvas");
+
+    canvas.ondragover = function(e) {
+      e.preventDefault();
+      if(!dragBlock) return;
+      let after = getBlockAfter(e.clientY);
+      showPlaceholder(after);
+    };
+
+    canvas.ondragleave = function(e) {
+      if (dragPlaceholder) dragPlaceholder.remove();
+    };
+
+    canvas.ondrop = function(e) {
+      e.preventDefault();
+      if(dragBlock && dragPlaceholder) {
+        if (dragPlaceholder.nextSibling) {
+          canvas.insertBefore(dragBlock, dragPlaceholder.nextSibling);
+        } else {
+          canvas.appendChild(dragBlock);
+        }
+        dragPlaceholder.remove();
+        unsaved = true;
+        updatePreview();
+      }
+      dragBlock = null;
+      dragPlaceholder = null;
+    };
+
+    function getBlockAfter(y) {
+      const blocks = [...canvas.querySelectorAll('.block:not(.block-top):not(.block-placeholder)')];
+      let after = null;
+      for (const b of blocks) {
+        const rect = b.getBoundingClientRect();
+        if (y < rect.top + rect.height / 2) {
+          after = b;
+          break;
+        }
+      }
+      return after;
+    }
+
+    function showPlaceholder(after) {
+      if (!dragPlaceholder) {
+        dragPlaceholder = document.createElement('div');
+        dragPlaceholder.className = 'block-placeholder';
+      }
+      if (dragPlaceholder.parentNode) dragPlaceholder.parentNode.removeChild(dragPlaceholder);
+      if (after) {
+        canvas.insertBefore(dragPlaceholder, after);
+      } else {
+        canvas.appendChild(dragPlaceholder);
+      }
+    }
+
+    // Sidebar drag
+    document.querySelectorAll(".block-btn").forEach(btn => {
+      btn.ondragstart = function(e) {
+        dragBlock = createBlock(btn.dataset.block);
+        dragBlock.style.display = "none";
+        setTimeout(() => {
+          dragBlock.style.display = "";
+          dragBlock.style.opacity = "0.7";
+          dragBlock.style.pointerEvents = "none";
+          document.body.appendChild(dragBlock);
+        }, 0);
+      };
+      btn.ondrag = function(e) {
+        if (dragBlock && e.pageY && e.pageX) {
+          dragBlock.style.left = e.pageX + "px";
+          dragBlock.style.top = e.pageY + "px";
+        }
+      };
+      btn.ondragend = function(e) {
+        if (dragBlock) {
+          dragBlock.style.position = "";
+          dragBlock.style.pointerEvents = "";
+          dragBlock.style.opacity = "";
+          if (dragBlock.parentNode === document.body) dragBlock.remove();
+          dragBlock = null;
+        }
+        if (dragPlaceholder) {
+          dragPlaceholder.remove();
+          dragPlaceholder = null;
+        }
+      };
+      btn.onclick = function() {
+        canvas.appendChild(createBlock(btn.dataset.block));
+        unsaved = true;
+        updatePreview();
+      };
+    });
+
+    function addBlockEvents(block) {
+      block.querySelectorAll(".delete-block").forEach(btn => {
+        btn.onclick = () => {
+          block.parentNode.removeChild(block);
+          unsaved = true;
+          updatePreview();
+        };
+      });
+      if(block.dataset.type==="list") {
+        block.querySelector(".add-li").onclick = () => {
+          const other = block.querySelector(".other-li");
+          const liDiv = document.createElement("div");
+          liDiv.innerHTML = `
+            <span>&lt;li&gt;</span>
+            <input type="text" class="litem" value="Another item">
+            <span>&lt;/li&gt;</span>
+            <button class="del-li" title="Remove">–</button>
+          `;
+          other.appendChild(liDiv);
+          liDiv.querySelector(".del-li").onclick = () => {
+            liDiv.remove();
+            unsaved = true;
+            updatePreview();
+          };
+        };
+        block.querySelectorAll(".del-li").forEach(btn => {
+          btn.onclick = () => { btn.parentNode.remove(); unsaved = true; updatePreview(); };
+        });
+      }
+      if(block.dataset.type==="heading") {
+        const hsel = block.querySelector(".hsize");
+        hsel.onchange = () => {
+          block.querySelector(".hsz").textContent = hsel.value;
+          unsaved = true;
+          updatePreview();
+        };
+      }
+      block.onclick = function(e) {
+        document.querySelectorAll('.block').forEach(b=>b.classList.remove('selected'));
+        block.classList.add('selected');
+        e.stopPropagation();
+      };
+      block.addEventListener("input", function() { unsaved = true; updatePreview(); }, true);
+      block.addEventListener("change", function() { unsaved = true; updatePreview(); }, true);
+      block.ondragstart = function(e) {
+        dragBlock = block;
+        setTimeout(() => block.style.display = "none", 0);
+      };
+      block.ondragend = function() {
+        dragBlock = null;
+        block.style.display = "";
+        if (dragPlaceholder) {
+          dragPlaceholder.remove();
+          dragPlaceholder = null;
+        }
+      };
+    }
+
+    function startEditor() {
+      projectName = "My HTMLBlocks Project";
+      unsaved = false;
+      document.getElementById("project-name").value = projectName;
+      canvas.innerHTML = '';
+      canvas.appendChild(createTopBlock());
+      updatePreview();
+    }
+
+    function blocksToHTML() {
+      let html = "";
+      let bgColor = "";
+      const blocks = [...canvas.querySelectorAll(".block:not(.block-top)")];
+      for (const block of blocks) {
+        const t = block.dataset.type;
+        if(t==="heading") {
+          const size = block.querySelector(".hsize").value;
+          const text = block.querySelector(".htext").value;
+          html += `<h${size}>${escapeHTML(text)}</h${size}>\n`;
+        } else if(t==="paragraph") {
+          const text = block.querySelector(".ptext").value;
+          html += `<p>${escapeHTML(text)}</p>\n`;
+        } else if(t==="span") {
+          const text = block.querySelector(".spantext").value;
+          html += `<span>${escapeHTML(text)}</span>\n`;
+        } else if(t==="pre") {
+          const text = block.querySelector(".pretext").value;
+          html += `<pre>${escapeHTML(text)}</pre>\n`;
+        } else if(t==="image") {
+          const src = block.querySelector(".imgsrc").value;
+          const alt = block.querySelector(".imgalt").value;
+          html += `<img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}">\n`;
+        } else if(t==="audio") {
+          const src = block.querySelector(".audiosrc").value;
+          html += `<audio controls src="${escapeHTML(src)}"></audio>\n`;
+        } else if(t==="video") {
+          const src = block.querySelector(".videosrc").value;
+          html += `<video controls src="${escapeHTML(src)}"></video>\n`;
+        } else if(t==="link") {
+          const href = block.querySelector(".alink").value;
+          const text = block.querySelector(".atext").value;
+          html += `<a href="${escapeHTML(href)}">${escapeHTML(text)}</a>\n`;
+        } else if(t==="list") {
+          const listType = block.querySelector(".listtype").value;
+          let items = [];
+          block.querySelectorAll(".litem").forEach(li => items.push(li.value));
+          html += `<${listType}>\n${items.map(i=>`  <li>${escapeHTML(i)}</li>`).join("\n")}\n</${listType}>\n`;
+        } else if(t==="input") {
+          const itype = block.querySelector(".itype").value;
+          const place = block.querySelector(".iplace").value;
+          html += `<input type="${escapeHTML(itype)}" placeholder="${escapeHTML(place)}">\n`;
+        } else if(t==="button") {
+          const text = block.querySelector(".btext").value;
+          html += `<button>${escapeHTML(text)}</button>\n`;
+        } else if(t==="div") {
+          const text = block.querySelector(".divtext").value;
+          html += `<div>${escapeHTML(text)}</div>\n`;
+        } else if(t==="color") {
+          bgColor = block.querySelector(".colorpick").value;
+        }
+      }
+      if(bgColor) {
+        html = `<style>body{background:${bgColor};}</style>\n` + html;
+      }
+      const titleSafe = escapeHTML(projectName || "HTMLBlocks Project");
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${titleSafe}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+</head>
+<body>
+${html}</body>
+</html>`;
+    }
+
+    // Preview/HTML switching
+    const outPrev = document.getElementById("output-preview");
+    const outHtml = document.getElementById("output-html");
+    document.getElementById("to-html").onclick = showHTML;
+    document.getElementById("to-preview").onclick = showPreview;
+
+    function updatePreview() {
+      if (outPrev.style.display !== "none") outPrev.srcdoc = blocksToHTML();
+      if (outHtml.style.display !== "none") outHtml.value = blocksToHTML();
+    }
+    function showPreview() {
+      outHtml.style.display = "none";
+      outPrev.style.display = "block";
+      updatePreview();
+    }
+    function showHTML() {
+      outPrev.style.display = "none";
+      outHtml.style.display = "block";
+      updatePreview();
+    }
+
+    function escapeHTML(s) {
+      return (s||"").replace(/[<>&"]/g,c=>({ '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;' }[c]));
+    }
+  </script>
+</body>
+</html>
