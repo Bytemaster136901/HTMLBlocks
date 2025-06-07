@@ -14,3 +14,5 @@ please tag @bytevdab (also me) in the description or title
 and if u can, link back to bytemaster136901.github.io/HTMLBlocks/ cuz it helps me a lot
 
 this is just to make sure no one steals my hard worked project and get more famous. i thank u for being cool about it,and thx (i hate stealers nowadays) -bytemaster136901
+
+(work in progress so if you experience any errors just let me know)
