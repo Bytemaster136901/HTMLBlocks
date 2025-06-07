@@ -1,7 +1,7 @@
 # HTMLBlocks
 <h2>Details</h2>
 
-this site is a fun passion project inspired by Scratch (scratch.mit.edu) i made for fun — rebuilt in plain HTML with creativity. its not connected to MIT or the Scratch team, just inspired by the awesome stuff they made.
+this site is a fun lil project inspired by Scratch (scratch.mit.edu) i made for fun — rebuilt in plain HTML with creativity. its not connected to MIT or the Scratch team, just inspired by the awesome stuff they made.
 
 <h2>Giving Credit</h2>
 
